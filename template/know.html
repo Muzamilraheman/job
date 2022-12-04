@@ -1,0 +1,534 @@
+{% extends 'base1.html' %}
+{% load static %}
+
+{% block content %}
+<div>
+<section class="py-5 bg-image overlay-primary fixed overlay" id="next"
+  style="background-color:blue ;">
+  <div class="container">
+    <div class="row mb-5 justify-content-center">
+      <div class="col-md-7 text-center">
+        <h2 class="section-title mb-2 text-white"><br><br>Strawberry Status</h2>
+        <p class="lead text-white">This is our STRAWBERRY status upto date.</p>
+      </div>
+    </div>
+    <div class="row pb-0 block__19738 section-counter">
+
+      <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
+        <div class="d-flex align-items-center justify-content-center mb-2">
+          <strong class="number" data-number="{{ total_candidates }}">0</strong>
+        </div>
+        <span class="caption">Candidates</span>
+      </div>
+
+      <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
+        <div class="d-flex align-items-center justify-content-center mb-2">
+          <strong class="number" data-number="{{ total_jobs }}">0</strong>
+        </div>
+        <span class="caption">Jobs Posted</span>
+      </div>
+
+      <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
+        <div class="d-flex align-items-center justify-content-center mb-2">
+          <strong class="number" data-number="{{ total_completed_jobs }}">0</strong>
+        </div>
+        <span class="caption">Jobs Filled</span>
+      </div>
+
+      <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
+        <div class="d-flex align-items-center justify-content-center mb-2">
+          <strong class="number" data-number="{{ total_companies }}">0</strong>
+        </div>
+        <span class="caption">Companies</span>
+      </div>
+
+
+    </div>
+  </div>
+</section>
+
+ <section id="ajax_listing_paginattion" class="site-section">
+  <div class="container">
+
+    {% if page_obj %}
+    <div class="row mb-5 justify-content-center">
+      <div class="col-md-7 text-center">
+        <h2 class="section-title mb-2">{{ total_jobs }} Job Listed</h2>
+      </div>
+    </div>
+
+
+    <ul id="job" class="job-listings mb-5">
+      {% for job in page_obj %}
+      <li class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
+        <a href="{% url 'jobapp:single-job' job.id %}"></a>
+        <div class="job-listing-logo">
+          <img src="{% static 'images/i.jpg' %}" alt="Free Website Template by Free-Template.co"
+            class="img-fluid">
+        </div>
+
+        <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">
+          <div class="job-listing-position custom-width w-50 mb-3 mb-sm-0">
+            <h2>{{ job.title }}</h2>
+            <strong>{{ job.company_name }}</strong>
+          </div>
+          <div class="job-listing-location mb-3 mb-sm-0 custom-width w-25">
+            <span class="icon-room"></span> {{ job.location }}
+          </div>
+          <div class="job-listing-meta">
+            {% if job.job_type == '1' %}
+            <span class="badge badge-success">
+              Full Time
+            </span>
+            {% elif job.job_type == '2'%}
+            <span class="badge badge-danger">
+              Part Time
+            </span>
+            {% else  %}
+            <span class="badge badge-info">
+              Internship
+            </span>
+            {% endif %}
+          </div>
+        </div>
+
+      </li>
+      {% endfor %}
+    </ul>
+    {% include 'jobapp/paginator.html' %}
+  </div>
+  {% endif %}
+</section> 
+</div>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+/* Reseting */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+.content{
+    width: 100vw;
+    min-height: 100vh;
+}
+
+.content .container{
+    padding-top: 30px;
+    padding-bottom: 20px;
+    box-shadow: 2px 15px 20px #1f1f1f10,-2px -8px 20px #1f1f1f1a;
+}
+
+
+.container .rollers{
+    flex: 0 0 230px;
+}
+
+.container .start-roller{
+    left: 0;
+    top: 0;
+    background-image: linear-gradient(to right, white 30%, #ffffff00);
+}
+
+.container .start-roller,
+.container .end-roller{
+    height: 100%;
+    width: 40px;
+    position: absolute;
+    z-index: 1;
+}
+
+.container .end-roller{
+    right: 0;
+    top: 0;
+    background-image: linear-gradient(to left, white 30%, rgba(255, 255, 255, 0));
+}
+
+.container .rollers .wrapper{
+    position: relative;
+    width: 1400px;
+    height: 100px;
+    margin: 0 0 20px 0;
+    flex: 0 0 auto;
+}
+
+.container .rollers .wrapper .items-container{
+    display: flex;
+    align-items: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    animation-duration: 30s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+
+.container .rollers .wrapper .items-container.roll-LL{
+    animation-name: roll;
+}
+.container .rollers .wrapper .items-container.roll-RL{
+    animation-name: roll-reverse;
+    left: 100%;
+}
+.container .rollers .wrapper .items-container.reverse-roll-LL{
+    animation-name: roll-clockwise;
+    left: -100%;
+}
+.container .rollers .wrapper .items-container.reverse-roll-RL{
+    animation-name: roll-reverse-clockwise;
+    left: 100%;
+}
+
+@keyframes roll {
+    0%{
+        left: 0%;
+    }
+    100%{
+        left: -100%;
+    }
+}
+@keyframes roll-reverse {
+    0%{
+        left: 100%;
+    }
+    100%{
+        left: 0%;
+    }
+}
+@keyframes roll-clockwise {
+    0%{
+        left: -100%;
+    }
+    100%{
+        left: 0%;
+    }
+}
+@keyframes roll-reverse-clockwise {
+    0%{
+        left: 0%;
+    }
+    100%{
+        left: 100%;
+    }
+}
+
+
+.container .rollers .wrapper .items-container .item{
+    flex: 1 1 200px;
+    min-width: 0;
+    margin: 20px;
+}
+
+.container .rollers .wrapper .items-container .item .company{
+    filter: grayscale(100%);
+    opacity: 0.2;
+    width: 100%;
+    object-fit: contain;
+}
+
+.container .rollers .wrapper .items-container .item .company:hover{
+    filter: grayscale(0%);
+    opacity: 1;
+    cursor: pointer;
+}
+
+.container img{
+    vertical-align: middle;
+}
+
+@media (max-width: 575.5px) {
+    .content{
+        padding: 20px;
+    }
+    .content .container{
+        padding: 20px;
+    }
+    .h3{
+        font-size: calc(1.1rem + .6vw);
+    }
+    .fs-5 {
+        font-size: 0.9rem!important;
+    }
+    .container .rollers .wrapper .items-container .item .company{
+        opacity: 0.4;
+    }
+}
+</style>
+
+    <div class="container rounded">
+        
+        <div class="rollers position-relative overflow-hidden">
+            <div class="start-roller"></div>
+            <div class="wrapper">
+                <div class="items-container roll-LL">
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/original-microsoft-logo-28.png" alt="" class="company">
+                    </div>
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/facebook-logo-15.jpg" alt="" class="company">
+                    </div>
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/google-logo-new-history-png-9.png" alt="" class="company">
+                    </div>
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/netflix-logo-0.png" alt="" class="company">
+                    </div>
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/logo-tokopedia-png/tokopedia-apa-itu-startup-pengertian-cara-memulai-dan-1.png" alt="" class="company">
+                    </div>
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/amazon-png-logo-vector/woodland-gardening-amazon-png-logo-vector-8.png" alt="" class="company">
+                    </div>
+                </div>
+                <div class="items-container roll-RL">
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/original-microsoft-logo-28.png" alt="" class="company">
+                    </div>
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/facebook-logo-15.jpg" alt="" class="company">
+                    </div>
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/google-logo-new-history-png-9.png" alt="" class="company">
+                    </div>
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/netflix-logo-0.png" alt="" class="company">
+                    </div>
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/logo-tokopedia-png/tokopedia-apa-itu-startup-pengertian-cara-memulai-dan-1.png" alt="" class="company">
+                    </div>
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/amazon-png-logo-vector/woodland-gardening-amazon-png-logo-vector-8.png" alt="" class="company">
+                    </div>
+                </div>
+            </div>
+            <div class="wrapper">
+                <div class="items-container reverse-roll-LL">
+                    <div class="item">
+<img src="https://www.freepnglogos.com/uploads/at-t-logo/brand-new-emblem-at-t-png-logo-6.png" alt="" class="company">
+                    </div>
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/sprint-png-logo/brand-sprint-png-logo-11.png" alt="" class="company">
+                    </div>
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/linkedin-logo-transparent-png-16.png" alt="" class="company">
+                    </div>
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/nokia-brand-logos-12.png" alt="" class="company">
+                    </div>
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/flipkart-logo-png/flipkart-logo-transparent-vector-3.png" alt="" class="company">
+                    </div>
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/cisco-png-logo/world-cisco-png-logo-12.png" alt="" class="company">
+                    </div>
+                </div>
+                <div class="items-container reverse-roll-RL">
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/at-t-logo/brand-new-emblem-at-t-png-logo-6.png" alt="" class="company">
+                    </div>
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/sprint-png-logo/brand-sprint-png-logo-11.png" alt="" class="company">
+                    </div>
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/linkedin-logo-transparent-png-16.png" alt="" class="company">
+                    </div>
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/nokia-brand-logos-12.png" alt="" class="company">
+                    </div>
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/flipkart-logo-png/flipkart-logo-transparent-vector-3.png" alt="" class="company">
+                    </div>
+                    <div class="item">
+                        <img src="https://www.freepnglogos.com/uploads/cisco-png-logo/world-cisco-png-logo-12.png" alt="" class="company">
+                    </div>
+                </div>
+            </div>
+            <div class="end-roller"></div>
+        </div>
+    </div>
+
+<section class="py-5 bg-image overlay-primary fixed overlay" style="background-color: blue;">
+  <div class="container">
+    {% if request.user.role == "employer" %}
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <h2 class="text-white">Want To Hire?</h2>
+        <p class="mb-0 text-white lead">Lorem ipsum dolor sit amet consectetur adipisicing elit tempora adipisci
+          impedit.</p>
+      </div>
+      <div class="col-md-3 ml-auto">
+        <a href="{% url 'jobapp:create-job' %}" class="btn btn-warning btn-block btn-lg">Post Your Job</a>
+      </div>
+    </div>
+    {% elif request.user.role == "employee" %}
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <h2 class="text-white">Looking For A Job?</h2>
+        <p class="mb-0 text-white lead">Lorem ipsum dolor sit amet consectetur adipisicing elit tempora adipisci
+          impedit.</p>
+      </div>
+      <div class="col-md-3 ml-auto">
+        <a href="{% url 'jobapp:job-list' %}" class="btn btn-warning btn-block btn-lg">Job List</a>
+      </div>
+    </div>
+    {% else %}
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <h2 class="text-white">Looking For A Job?</h2>
+        <p class="mb-0 text-white lead">Lorem ipsum dolor sit amet consectetur adipisicing elit tempora adipisci
+          impedit.</p>
+      </div>
+      <div class="col-md-3 ml-auto">
+        <a href="{% url 'account:employee-registration' %}" class="btn btn-warning btn-block btn-lg">Sign Up</a>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+<section class="bg-light pt-5 testimony-full">
+
+  <div class="owl-carousel single-carousel">
+
+
+    <!-- <div class="container">
+      <div class="row">
+        <div class="col-lg-6 align-self-center text-center text-lg-left">
+          <blockquote>
+            <p>&ldquo;Soluta quasi cum delectus eum facilis recusandae nesciunt molestias accusantium libero dolores
+              repellat id in dolorem laborum ad modi qui at quas dolorum voluptatem voluptatum repudiandae.&rdquo;</p>
+            <p><cite> &mdash; Corey Woods, @Dribbble</cite></p>
+          </blockquote>
+        </div>
+        <div class="col-lg-6 align-self-end text-center text-lg-right">
+          <img src="images/person_transparent_2.png" alt="Image" class="img-fluid mb-0">
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 align-self-center text-center text-lg-left">
+          <blockquote>
+            <p>&ldquo;Soluta quasi cum delectus eum facilis recusandae nesciunt molestias accusantium libero dolores
+              repellat id in dolorem laborum ad modi qui at quas dolorum voluptatem voluptatum repudiandae.&rdquo;</p>
+            <p><cite> &mdash; Chris Peters, @Google</cite></p>
+          </blockquote>
+        </div>
+        <div class="col-lg-6 align-self-end text-center text-lg-right">
+          <img src="images/person_transparent.png" alt="Image" class="img-fluid mb-0">
+        </div>
+      </div>
+    </div> -->
+
+  </div>
+
+</section>
+
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+
+$("#ajax_listing_paginattion" ).delegate( "a#ajax_paginator", "click", function( event ) {
+		event.preventDefault();
+    joblist = ``
+    next_paging = ``
+    prev_paging = ``
+    page_navigator = ``
+		var page_ref = $(this).attr('href');
+    var page_number = page_ref.slice(6);
+    console.log('page_number', page_number);
+		$.ajax({
+					type: "GET",
+					url: "{% url 'jobapp:home' %}", 
+					data : {    
+          page : page_number, 
+				},
+        success: function (response) {
+          $('#job').html('')
+                    response.job_lists.map(function (job) {
+
+                        joblist+=`
+                          <li id="next" class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
+                            <a href="/job/${job.id}/"></a>
+                              <div class="job-listing-logo">
+                                <img src="{% static 'images/i.jpg' %}" alt="Free Website Template by Free-Template.co"
+                                  class="img-fluid">
+                              </div>
+
+                              <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">
+                                <div class="job-listing-position custom-width w-50 mb-3 mb-sm-0">
+                                  <h2>${ job.title }</h2>
+                                  <strong>${ job.company_name }</strong>
+                                </div>
+                                <div class="job-listing-location mb-3 mb-sm-0 custom-width w-25">
+                                  <span class="icon-room"></span>${ job.location } 
+                                </div>
+                                
+                                <div class="job-listing-meta">
+                                  ${ job.job_type == '1'
+                                  ?  
+                                  `<span class="badge badge-success">
+                                    Full Time
+                                  </span>`
+                                  : 
+                                  job.job_type == '2' 
+                                  ?  
+                                  `<span class="badge badge-danger">
+                                    Part Time
+                                  </span>` 
+                                  :
+                                  `<span class="badge badge-info">
+                                    Internship
+                                  </span>
+                                  `
+                                  }
+                                </div>
+                              </div>
+                            </li>
+                        ` 
+                      })
+
+                        $('#job').html(joblist)
+                        response.next_page_number != null ?
+                        next_paging+=`<a id="ajax_paginator" class="next" href="?page=${ response.next_page_number }">Next</a>`
+                        : ''
+
+                        $('div>#next_page').html(next_paging)
+                        $('div>.active').removeClass('active')
+                        $('div>.ajax_paginator_'+response.current_page_no).addClass('active')
+                        
+                        // .attr('href','http://example.com')
+                        // .removeAttr("href");
+                        
+                        response.current_page_no > 1 ?
+                        prev_paging+=`<a id="ajax_paginator" href="?page=${ response.prev_page_number }" class="prev">Prev</a>`
+                        : ''
+                        $('div>#prev_page').html(prev_paging)
+
+                        page_navigator+=`Showing ${ response.current_page_no } of ${ response.no_of_page } Pages`
+                        $('div>#page_navigator').html(page_navigator)
+                      
+                    },
+                    
+				error: function () {
+					alert('Error Occured');
+				}
+			});
+
+	});  
+  
+  
+	</script>
+
+<!--  footer-->
+
+
+
+{% endblock %}
+
+
